@@ -9,8 +9,6 @@ servers:
 paths:
   /login:
     post:
-      tags: [login]
-      operationId: login
       description: Authorization method
       requestBody:
         description: Login and password hash
@@ -18,37 +16,41 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginSuccessDto'
+              type: object
+              properties:
+                login:
+                  type: string
+                  required: true
+                password:
+                  type: string
+                  required: true
       responses:
         '200':
           description: Success authorization
-          content:
-            application/json:
+          headers:
+            Set-Cookie:
+              description: Set authorization cookie/token
               schema:
-                $ref: '#/components/schemas/LoginDto'
+                type: string
         '400':
-          description: Bad credentials
+          description: Error input data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: '#/components/schemas/Error'
   /logout:
     post:
-      tags: [login]
-      security:
-        - bearerAuth: []
-      operationId: logout
       description: Logout
+      security:
+        - cookieAuth: [ ]
       responses:
         '200':
           description: Success logout
   /file:
     post:
-      tags: [file]
-      security:
-        - bearerAuth: []
-      operationId: filePost
       description: Upload file to server
+      security:
+        - cookieAuth: [ ]
       parameters:
         - name: filename
           in: query
@@ -59,7 +61,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/FileDto'
+              $ref: '#/components/schemas/File'
       responses:
         '200':
           description: Success upload
@@ -68,19 +70,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorDto'
-        '401':
-          description: Unauthorized error
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error upload file
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: '#/components/schemas/Error'
     delete:
-      tags: [file]
-      security:
-        - bearerAuth: []
-      operationId: fileDelete
       description: Delete file
+      security:
+        - cookieAuth: [ ]
       parameters:
         - name: filename
           in: query
@@ -96,70 +96,47 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorDto'
-        '401':
-          description: Unauthorized error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: '#/components/schemas/Error'
         '500':
           description: Error delet file
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorDto'
-    put:
-      tags: [file]
+                $ref: '#/components/schemas/Error'
+    get:
+      description: Dowload file from cloud
       security:
-        - bearerAuth: []
-      operationId: filePut
-      description: Edit file name
+        - cookieAuth: [ ]
       parameters:
         - name: filename
           in: query
           schema:
             type: string
-          description: File name to upload
-      requestBody:
-        description: Login and password hash
-        required: true
-        content:
-          application/json:
-            schema:
-              title: hasNameDto
-              type: object
-              properties:
-                name:
-                  type: string
+          description: File name to download
       responses:
         '200':
-          description: Success upload
+          description: Success deleted
+          content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/File'
         '400':
           description: Error input data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorDto'
-        '401':
-          description: Unauthorized error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: '#/components/schemas/Error'
         '500':
           description: Error upload file
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: '#/components/schemas/Error'
   /list:
     get:
-      tags: [file]
-      security:
-        - bearerAuth: []
-      operationId: getAll
       description: Get all files
+      security:
+        - cookieAuth: [ ]
       parameters:
         - name: limit
           in: query
@@ -172,31 +149,36 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DescriptionFileDto'
-
+                type: object
+                properties:
+                  filename:
+                    type: string
+                    description: File name
+                    required: true
+                  size:
+                    type: integer
+                    description: File size in bytes
+                    required: true
         '400':
           description: Error input data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorDto'
-        '401':
-          description: Unauthorized error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: '#/components/schemas/Error'
         '500':
           description: Error getting file list
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: '#/components/schemas/Error'
 components:
+  securitySchemes:
+    cookieAuth:
+      type: token
+      in: cookie
+      name: SESSION_ID  # cookie name
   schemas:
-    ErrorDto:
+    Error:
       type: object
       properties:
         message:
@@ -204,7 +186,7 @@ components:
           description: Error message
         id:
           type: integer
-    FileDto:
+    File:
       type: object
       properties:
         hash:
@@ -212,36 +194,3 @@ components:
         file:
           type: string
           format: binary
-    LoginDto:
-      type: object
-      properties:
-        auth-token:
-          type: string
-    LoginSuccessDto:
-      type: object
-      required:
-        - login
-        - password
-      properties:
-        login:
-          type: string
-        password:
-          type: string
-    DescriptionFileDto:
-      type: object
-      required:
-        - filename
-        - size
-      properties:
-        filename:
-          type: string
-          description: File name
-        size:
-          type: integer
-          description: File size in bytes
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
