@@ -1,13 +1,12 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   title: Cloud API
   description: Cloud API
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8080/cloud'
-    description: local server
+  - url: ''
 paths:
-  /login:
+  /api/login:
     post:
       tags: [login]
       operationId: login
@@ -18,21 +17,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginSuccessDto'
+              $ref: '#/components/schemas/LoginDto'
       responses:
         '200':
           description: Success authorization
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginDto'
+                $ref: '#/components/schemas/LoginSuccessDto'
         '400':
           description: Bad credentials
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
-  /logout:
+  /api/logout:
     post:
       tags: [login]
       security:
@@ -42,7 +41,7 @@ paths:
       responses:
         '200':
           description: Success logout
-  /file:
+  /api/file:
     post:
       tags: [file]
       security:
@@ -121,16 +120,17 @@ paths:
           schema:
             type: string
           description: File name to upload
+          required: true
       requestBody:
         description: Login and password hash
         required: true
         content:
           application/json:
             schema:
-              title: hasNameDto
+              title: hasFileNameDto
               type: object
               properties:
-                name:
+                filename:
                   type: string
       responses:
         '200':
@@ -153,7 +153,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
-  /list:
+  /api/list:
     get:
       tags: [file]
       security:
@@ -212,12 +212,12 @@ components:
         file:
           type: string
           format: binary
-    LoginDto:
+    LoginSuccessDto:
       type: object
       properties:
         auth-token:
           type: string
-    LoginSuccessDto:
+    LoginDto:
       type: object
       required:
         - login

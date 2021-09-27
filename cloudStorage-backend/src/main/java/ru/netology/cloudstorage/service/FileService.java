@@ -6,27 +6,19 @@ import com.google.common.hash.HashingInputStream;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.model.DescriptionFileDto;
 import org.openapitools.model.FileDto;
-import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudstorage.exception.StorageException;
 import ru.netology.cloudstorage.exception.StorageFileExistException;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,12 +39,10 @@ public class FileService {
                     break;
                 DescriptionFileDto descriptionFileDto = new DescriptionFileDto();
                 descriptionFileDto.setFilename(path.getFileName().toString());
-                descriptionFileDto.setSize((int) Files.size(path));
+                //descriptionFileDto.setSize((int) Files.size(path));
                 result.add(descriptionFileDto);
             }
             return result;
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to get all files", e);
         }
     }
 

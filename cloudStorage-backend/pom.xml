@@ -123,6 +123,7 @@
                             <modelPackage>${swagger.model.package}</modelPackage>
                             <skipValidateSpec>false</skipValidateSpec>
                             <configOptions>
+                                <useTags>true</useTags>
                                 <delegatePattern>false</delegatePattern>
                                 <interfaceOnly>true</interfaceOnly>
                                 <returnSuccessCode>true</returnSuccessCode>

@@ -2,8 +2,9 @@ package ru.netology.cloudstorage.contoller;
 
 import lombok.RequiredArgsConstructor;
 import org.openapitools.api.FileApi;
+import org.openapitools.model.DescriptionFileDto;
 import org.openapitools.model.FileDto;
-import org.openapitools.model.HasNameDto;
+import org.openapitools.model.HasFileNameDto;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -16,6 +17,7 @@ import ru.netology.cloudstorage.service.FileService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class FileController implements FileApi {
         return null;
     }
 
-    @RequestMapping(value = "/file",
+    @RequestMapping(value = "/api/file",
             produces = {"multipart/form-data"},
             method = RequestMethod.GET)
     public ResponseEntity<MultiValueMap<String, Object>> fileGet(@Valid String filename) {
@@ -48,8 +50,14 @@ public class FileController implements FileApi {
     }
 
     @Override
-    public ResponseEntity<Void> filePut(@Valid HasNameDto hasNameDto, @Valid String filename) {
-        fileService.rename(filename, hasNameDto.getName());
+    public ResponseEntity<Void> filePut(@NotNull @Valid String filename, @Valid HasFileNameDto hasFileNameDto) {
+        fileService.rename(filename, hasFileNameDto.getFilename());
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<List<DescriptionFileDto>> getAll(@Valid Integer limit) {
+        List<DescriptionFileDto> result = fileService.getAll(limit);
+        return ResponseEntity.ok(result);
     }
 }

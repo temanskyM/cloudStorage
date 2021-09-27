@@ -2,9 +2,10 @@ import axios from "axios";
 import cookies from 'browser-cookies';
 
 const AUTH_TOKEN_KEY = 'auth-token';
+const API_PREFIX = '/api/';
 
 const httpClient = axios.create({
-    baseURL: process.env.VUE_APP_BASE_URL,
+    baseURL: process.env.VUE_APP_BASE_URL + API_PREFIX,
     headers: {
         "Content-Type": "application/json",
     },
