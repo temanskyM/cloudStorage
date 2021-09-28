@@ -1,5 +1,6 @@
 package ru.netology.cloudstorage.service;
 
+import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -68,7 +69,8 @@ public class StorageServiceImpl implements StorageService{
     public Resource loadAsResource(String filename) {
         try {
             Path file = load(filename);
-            Resource resource = new UrlResource(file.toUri());
+            String absolutePath = file.toFile().getAbsolutePath();
+            Resource resource = new FileUrlResource(absolutePath);
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             }
