@@ -25,7 +25,7 @@ public class AuthController implements LoginApi {
     }
 
     @PostMapping("/api/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<String> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         authService.registerUser(signUpRequest);
         return ResponseEntity.ok("User registered successfully!");
     }
