@@ -39,10 +39,12 @@ public class FileService {
                     break;
                 DescriptionFileDto descriptionFileDto = new DescriptionFileDto();
                 descriptionFileDto.setFilename(path.getFileName().toString());
-                //descriptionFileDto.setSize((int) Files.size(path));
+                descriptionFileDto.setSize((int) Files.size(path));
                 result.add(descriptionFileDto);
             }
             return result;
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to get list files", e);
         }
     }
 

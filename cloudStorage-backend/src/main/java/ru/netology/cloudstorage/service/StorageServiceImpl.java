@@ -2,7 +2,6 @@ package ru.netology.cloudstorage.service;
 
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +20,7 @@ import java.util.stream.Stream;
 
 @Service
 public class StorageServiceImpl implements StorageService{
-    private final Path rootLocation =  Paths.get(RootDirProvider.get());
+    private final Path rootLocation = Paths.get(RootDirProvider.get());
 
     @Override
     public void store(@NotNull MultipartFile file) {
@@ -51,8 +50,7 @@ public class StorageServiceImpl implements StorageService{
     public Stream<Path> loadAll() {
         try {
             return Files.walk(this.rootLocation, 1)
-                    .filter(path -> !path.equals(this.rootLocation))
-                    .map(this.rootLocation::relativize);
+                    .filter(path -> !path.equals(this.rootLocation));
         }
         catch (IOException e) {
             throw new StorageException("Failed to read stored files", e);
