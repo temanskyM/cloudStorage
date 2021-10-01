@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.netology.cloudstorage.model.User;
 import ru.netology.cloudstorage.repository.UserRepository;
-import ru.netology.cloudstorage.config.security.model.UserDetailsImpl;
+import ru.netology.cloudstorage.security.UserDetailsImpl;
 
 import javax.transaction.Transactional;
 

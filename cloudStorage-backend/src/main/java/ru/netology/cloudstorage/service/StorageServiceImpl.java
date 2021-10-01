@@ -1,5 +1,6 @@
 package ru.netology.cloudstorage.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 @Service
+@Slf4j
 public class StorageServiceImpl implements StorageService{
     private final Path rootLocation = Paths.get(RootDirProvider.get());
 
@@ -53,6 +55,7 @@ public class StorageServiceImpl implements StorageService{
                     .filter(path -> !path.equals(this.rootLocation));
         }
         catch (IOException e) {
+            log.debug("Failed to read stored file");
             throw new StorageException("Failed to read stored files", e);
         }
 
@@ -93,6 +96,7 @@ public class StorageServiceImpl implements StorageService{
             Files.createDirectories(rootLocation);
         }
         catch (IOException e) {
+            log.debug("Could not initialize storag");
             throw new StorageException("Could not initialize storage", e);
         }
     }

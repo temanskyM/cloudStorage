@@ -1,4 +1,4 @@
-package ru.netology.cloudstorage.config.security.model;
+package ru.netology.cloudstorage.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

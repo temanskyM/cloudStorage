@@ -1,7 +1,6 @@
-package ru.netology.cloudstorage.Util;
+package ru.netology.cloudstorage.service;
 
 import io.jsonwebtoken.*;
-import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -12,7 +11,7 @@ import java.util.Date;
 
 @Component
 @Slf4j
-public class JwtUtils {
+public class JwtService {
     @Value("${jwt.secret}")
     private String jwtSecret;
 

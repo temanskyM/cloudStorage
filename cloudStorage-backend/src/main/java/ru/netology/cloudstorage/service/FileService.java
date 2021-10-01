@@ -4,6 +4,7 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.HashingInputStream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.DescriptionFileDto;
 import org.openapitools.model.FileDto;
 import org.springframework.core.io.Resource;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileService {
     private final StorageService storageService;
 
@@ -44,6 +46,7 @@ public class FileService {
             }
             return result;
         } catch (IOException e) {
+            log.debug("Unable to get list files");
             throw new RuntimeException("Unable to get list files", e);
         }
     }
@@ -63,14 +66,18 @@ public class FileService {
             File file = resource.getFile();
             File file2 = new File(filenameAfter);
 
-            if (file2.exists())
+            if (file2.exists()) {
+                log.debug("File with name {} is exists", filenameAfter);
                 throw new StorageFileExistException(String.format("File with name %S is exists", filenameAfter));
+            }
             boolean success = file.renameTo(file2);
 
             if (!success) {
+                log.debug("Unable to rename file");
                 throw new StorageException("Unable to rename file");
             }
         } catch (IOException e) {
+            log.debug("Unable to rename file");
             throw new StorageException("Unable to rename file", e);
         }
 
@@ -86,6 +93,7 @@ public class FileService {
             fileDto.setHash(hashCode.toString());
             return fileDto;
         } catch (IOException e) {
+            log.debug("Unable to rename fileDto");
             throw new RuntimeException("Unable to build fileDto");
         }
     }
